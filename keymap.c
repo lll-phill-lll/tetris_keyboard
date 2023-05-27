@@ -69,6 +69,7 @@ float layer0_song[][2] = SONG(MY_OWN_SOUND);
 float ode_to_joy[][2] = SONG(ODE_TO_JOY);
 float rick_roll[][2] = SONG(RICK_ROLL2);
 float numb[][2] = SONG(LP_NUMB2);
+float tetris_song[][2] = SONG(TETRIS_SONG);
 
 enum layers {
     BASE,  // default layer
@@ -113,7 +114,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         case START_MUSIC:
 #ifdef AUDIO_ENABLE
-			PLAY_SONG(numb);
+			PLAY_LOOP(tetris_song);
 #endif
             return false;
         }
