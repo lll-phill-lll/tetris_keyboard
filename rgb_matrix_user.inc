@@ -10,9 +10,31 @@ RGB_MATRIX_EFFECT(tetris)
 #ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
 #include "tetris.h"
+#include "song.h"
+
+uint8_t red_pos = 0;
 
 #define FPS 12
 uint32_t timer = 0;
+uint32_t last_updated = 0;
+RGB bitmap[KEY_NUM];
+
+void clear_bitmap(void) {
+    for (uint8_t i = 0; i < KEY_NUM; ++i) {
+        bitmap[i].r = 0;
+        bitmap[i].g = 0;
+        bitmap[i].b = 0;
+    }
+}
+
+void apply_bitmap(uint8_t led_min, uint8_t led_max) {
+    for (uint8_t i = led_min; i < led_max; ++i) {
+        rgb_matrix_set_color(i, bitmap[i].r, bitmap[i].g, bitmap[i].b);
+        // if (i == red_pos) {
+        //     rgb_matrix_set_color(i, RGB_RED);
+        // }
+    }
+}
 
 
 // e.g: A simple effect, self-contained within a single method
@@ -21,39 +43,20 @@ static bool tetris(effect_params_t* params) {
       return false;
   }
   RGB_MATRIX_USE_LIMITS(led_min, led_max);
-  for (uint8_t i = led_min; i < led_max; i++) {
-      if (i == red_pos) {
-        rgb_matrix_set_color(i, RGB_RED);
-      } else {
-        rgb_matrix_set_color(i, RGB_YELLOW);
-      }
-  }
-  if (led_max == 72) {
+  apply_bitmap(led_min, led_max);
+
+  if (led_max == KEY_NUM) {
+      // ++red_pos;
+      // if (red_pos > KEY_NUM) {
+      //     red_pos = 0;
+      // }
+      clear_bitmap();
+      uint32_t delta_time = timer_elapsed32(last_updated);
+      get_next_move(delta_time, bitmap);
+      last_updated = timer_read32();
       timer = g_rgb_timer + 1000 / FPS;
-      ++red_pos;
-      if (red_pos >= 72) {
-          red_pos = 0;
-      }
   }
   return rgb_matrix_check_finished_leds(led_max);
 }
-
-// e.g: A more complex effect, relying on external methods and state, with
-// dedicated init and run methods
-// static uint8_t some_global_state;
-// static void my_cool_effect2_complex_init(effect_params_t* params) {
-//   some_global_state = 1;
-// }
-// static bool my_cool_effect2_complex_run(effect_params_t* params) {
-//   RGB_MATRIX_USE_LIMITS(led_min, led_max);
-//   for (uint8_t i = led_min; i < led_max; i++) {
-//     rgb_matrix_set_color(i, 0xff, some_global_state++, 0xff);
-//   }
-//   return rgb_matrix_check_finished_leds(led_max);
-// }
-// static bool my_cool_effect2(effect_params_t* params) {
-//   if (params->init) my_cool_effect2_complex_init(params);
-//   return my_cool_effect2_complex_run(params);
-// }
 
 #endif // RGB_MATRIX_CUSTOM_EFFECT_IMPLS

@@ -22,6 +22,7 @@
 #include "version.h"
 
 #include "tetris.h"
+#include "song.h"
 
 
 #ifdef AUDIO_ENABLE
@@ -104,13 +105,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         switch (keycode) {
         case RESTART:
             rgb_matrix_mode(RGB_MATRIX_CUSTOM_tetris);
-            red_pos = 0;
+            init_tetris_state();
 			return false;
         case LEFT:
-            red_pos--;
             return false;
         case RIGHT:
-            red_pos++;
             return false;
         case START_MUSIC:
 #ifdef AUDIO_ENABLE
@@ -121,4 +120,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     }
     return true;
+}
+
+
+void keyboard_post_init_user(void) {
+    init_tetris_state();
 }
