@@ -42,10 +42,10 @@ enum figure_type {
 
 
 typedef struct _figure_t {
-    uint8_t p1;
-    uint8_t p2;
-    uint8_t p3;
-    uint8_t p4;
+    int8_t p1;
+    int8_t p2;
+    int8_t p3;
+    int8_t p4;
 
     uint8_t type;
 } figure_t;
@@ -57,8 +57,8 @@ typedef struct _tetris_state_t {
     uint32_t anim_counter;
     uint32_t ms_per_move;
     figure_t saved_figures[20];
-    uint8_t last_saved_figure_index;
-    uint8_t last_free_cell_in_col[7];
+    int8_t last_saved_figure_index;
+    int8_t last_free_cell_in_col[7];
 
 } tetris_state_t;
 
