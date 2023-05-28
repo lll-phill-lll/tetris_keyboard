@@ -108,8 +108,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             init_tetris_state();
 			return false;
         case LEFT:
+            tetris_move_left();
             return false;
         case RIGHT:
+            tetris_move_right();
             return false;
         case START_MUSIC:
 #ifdef AUDIO_ENABLE

@@ -4,18 +4,26 @@
 
 #define KEY_NUM 72
 
-#define I_FIGURE_SPAWN_P1 19
-#define I_FIGURE_SPAWN_P2 18
-#define I_FIGURE_SPAWN_P3 17
-#define I_FIGURE_SPAWN_P4 16
+#define I_FIGURE_SPAWN_P1 30
+#define I_FIGURE_SPAWN_P2 31
+#define I_FIGURE_SPAWN_P3 32
+#define I_FIGURE_SPAWN_P4 33
 
-#define T_FIGURE_SPAWN_P1 23
-#define T_FIGURE_SPAWN_P2 19
-#define T_FIGURE_SPAWN_P3 18
-#define T_FIGURE_SPAWN_P4 13
+#define T_FIGURE_SPAWN_P1 41
+#define T_FIGURE_SPAWN_P2 30
+#define T_FIGURE_SPAWN_P3 31
+#define T_FIGURE_SPAWN_P4 21
 
 #define I_FIGURE_COLOR RGB_BLUE
 #define T_FIGURE_COLOR RGB_PURPLE
+
+#define LEFT_CELL_1_ROW 40
+#define LEFT_CELL_2_ROW 51
+#define LEFT_CELL_9_ROW 58
+#define LEFT_CELL_10_ROW 49
+#define DOWN_CELL_1_COL 67
+#define DOWN_CELL_2_COL 58
+
 
 
 enum figure_type {
@@ -42,6 +50,8 @@ typedef struct _figure_t {
 
 typedef struct _tetris_state_t {
     char has_moving_figure;
+    char can_move_left;
+    char can_move_right;
     uint32_t anim_counter;
     uint32_t ms_per_move;
 
@@ -50,3 +60,6 @@ typedef struct _tetris_state_t {
 void init_tetris_state(void);
 
 void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]);
+
+void tetris_move_left(void);
+void tetris_move_right(void);

@@ -19,6 +19,28 @@ uint32_t timer = 0;
 uint32_t last_updated = 0;
 RGB bitmap[KEY_NUM];
 
+const uint8_t field_remap[KEY_NUM] = {
+    4,  3,  2,  1,  0,
+    36, 37, 38, 39, 40,
+    9,  8,  7,  6,  5,
+    41, 42, 43, 44, 45,
+    14, 13, 12, 11, 10,
+    46, 47, 48, 49, 50,
+    19, 18, 17, 16, 15,
+    51, 52, 53, 54, 55,
+    24, 23, 22, 21, 20,
+    56, 57, 58, 59, 60,
+    32, 28, 27, 26, 25,
+    61, 62, 63, 64, 33,
+    34, 35, 31, 30, 29,
+    65, 66, 67, 68, 69,
+    70, 71
+};
+
+uint8_t remap_index(uint8_t index) {
+    return field_remap[index];
+}
+
 void clear_bitmap(void) {
     for (uint8_t i = 0; i < KEY_NUM; ++i) {
         bitmap[i].r = 0;
@@ -29,9 +51,10 @@ void clear_bitmap(void) {
 
 void apply_bitmap(uint8_t led_min, uint8_t led_max) {
     for (uint8_t i = led_min; i < led_max; ++i) {
-        rgb_matrix_set_color(i, bitmap[i].r, bitmap[i].g, bitmap[i].b);
+        uint8_t remapped = remap_index(i);
+        rgb_matrix_set_color(remapped, bitmap[i].r, bitmap[i].g, bitmap[i].b);
         // if (i == red_pos) {
-        //     rgb_matrix_set_color(i, RGB_RED);
+        //     rgb_matrix_set_color(remapped, RGB_RED);
         // }
     }
 }
