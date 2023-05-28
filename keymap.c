@@ -83,14 +83,15 @@ enum custom_keycodes {
     ROTATE,
     RESTART,
     START_MUSIC,
-    END_MUSIC
+    END_MUSIC,
+    PAUSE
 
 };
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_moonlander(
-        RESTART, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, AU_ON  , START_MUSIC, QK_BOOT,
+        RESTART, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, XXXXXXX, PAUSE, AU_ON  , START_MUSIC, QK_BOOT,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -110,8 +111,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LEFT:
             tetris_move_left();
             return false;
+        case ROTATE:
+            tetris_rotate();
+            return false;
         case RIGHT:
             tetris_move_right();
+            return false;
+        case PAUSE:
+            tetris_pause();
             return false;
         case START_MUSIC:
 #ifdef AUDIO_ENABLE

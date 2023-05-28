@@ -13,6 +13,7 @@ void init_tetris_state() {
     tetris_state.anim_counter = 1200;
     tetris_state.ms_per_move = 1200;
     tetris_state.last_saved_figure_index = -1;
+    tetris_state.is_paused = 0;
 
     int8_t* p = &tetris_state.last_free_cell_in_col[0];
     *p++ = 9; *p++ = 19; *p++ = 29; *p++ = 39;
@@ -39,9 +40,9 @@ void render_T_cell(RGB bitmap[KEY_NUM], int8_t cell) {
     if (cell < 0) {
         return;
     }
-    bitmap[cell].r = 0xFF;
-    bitmap[cell].g = 0x00;
-    bitmap[cell].b = 0x00;
+    bitmap[cell].r = 0xE6;
+    bitmap[cell].g = 0xE6;
+    bitmap[cell].b = 0xFA;
 }
 
 void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
@@ -71,6 +72,7 @@ void render_field(RGB bitmap[KEY_NUM]) {
 
 void spawn_figure(void) {
     next_figure.type = rand() % LAST_TYPE;
+    next_figure.position_type = UP_POSITION;
     switch (next_figure.type) {
         case I:
             next_figure.p1 = I_FIGURE_SPAWN_P1;
@@ -135,6 +137,9 @@ void update_last_free_cols(void) {
 }
 
 void do_move(void) {
+    if (tetris_state.is_paused) {
+        return;
+    }
     if (tetris_state.has_moving_figure == 0) {
         spawn_figure();
         tetris_state.has_moving_figure = 1;
@@ -191,4 +196,68 @@ void tetris_move_right() {
     next_figure.p4 -= 10;
 }
 
+void rotate_next_figure_as_T_up_right(void) {
+    next_figure.p1 = next_figure.p2;
+    next_figure.p2 = next_figure.p4;
+    next_figure.p4 = next_figure.p3 + 1;
 
+    next_figure.position_type = RIGHT_POSITION;
+}
+
+void rotate_next_figure_as_T_right_down(void) {
+    next_figure.p1 = next_figure.p2;
+    next_figure.p2 = next_figure.p4;
+    next_figure.p4 = next_figure.p3 + 10;
+
+    next_figure.position_type = DOWN_POSITION;
+}
+
+void rotate_next_figure_as_T_down_left(void) {
+    next_figure.p1 = next_figure.p2;
+    next_figure.p2 = next_figure.p4;
+    next_figure.p4 = next_figure.p3 - 1;
+
+    next_figure.position_type = LEFT_POSITION;
+}
+
+void rotate_next_figure_as_T_left_up(void) {
+    next_figure.p1 = next_figure.p2;
+    next_figure.p2 = next_figure.p4;
+    next_figure.p4 = next_figure.p3 - 10;
+
+    next_figure.position_type = UP_POSITION;
+}
+
+void rotate_next_figure_as_T(void) {
+    switch (next_figure.position_type) {
+        case UP_POSITION:
+            rotate_next_figure_as_T_up_right();
+            break;
+        case RIGHT_POSITION:
+            rotate_next_figure_as_T_right_down();
+            break;
+        case DOWN_POSITION:
+            rotate_next_figure_as_T_down_left();
+            break;
+        case LEFT_POSITION:
+            rotate_next_figure_as_T_left_up();
+            break;
+    }
+
+}
+
+void tetris_rotate() {
+    switch(next_figure.type) {
+        case T:
+            rotate_next_figure_as_T();
+            break;
+    }
+}
+
+void tetris_pause() {
+    if (tetris_state.is_paused) {
+        tetris_state.is_paused = 0;
+    } else {
+        tetris_state.is_paused = 1;
+    }
+}

@@ -40,6 +40,15 @@ enum figure_type {
     LAST_TYPE
 };
 
+enum positoin_type {
+    UP_POSITION = 0,
+    RIGHT_POSITION,
+    DOWN_POSITION,
+    LEFT_POSITION,
+
+    LAST_POSITION
+};
+
 
 typedef struct _figure_t {
     int8_t p1;
@@ -48,6 +57,7 @@ typedef struct _figure_t {
     int8_t p4;
 
     uint8_t type;
+    uint8_t position_type;
 } figure_t;
 
 typedef struct _tetris_state_t {
@@ -59,6 +69,8 @@ typedef struct _tetris_state_t {
     figure_t saved_figures[20];
     int8_t last_saved_figure_index;
     int8_t last_free_cell_in_col[7];
+    char is_paused;
+
 
 } tetris_state_t;
 
@@ -68,3 +80,7 @@ void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]);
 
 void tetris_move_left(void);
 void tetris_move_right(void);
+
+void tetris_rotate(void);
+
+void tetris_pause(void);
