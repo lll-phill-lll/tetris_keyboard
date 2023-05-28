@@ -14,6 +14,11 @@
 #define T_FIGURE_SPAWN_P3 31
 #define T_FIGURE_SPAWN_P4 21
 
+#define RZ_FIGURE_SPAWN_P1 41
+#define RZ_FIGURE_SPAWN_P2 31
+#define RZ_FIGURE_SPAWN_P3 30
+#define RZ_FIGURE_SPAWN_P4 20
+
 #define I_FIGURE_COLOR RGB_BLUE
 #define T_FIGURE_COLOR RGB_PURPLE
 
@@ -31,11 +36,11 @@ static const uint8_t initial_last_row_cells[] = {9, 19, 29, 39, 49, 58, 67};
 enum figure_type {
     T = 0,
     I,
+    RZ,
     // O,
     // L,
     // LR,
     // Z,
-    // RZ,
 
     LAST_TYPE
 };
@@ -47,6 +52,13 @@ enum positoin_type {
     LEFT_POSITION,
 
     LAST_POSITION
+};
+
+enum short_positoin_type {
+    UP_SHORT_POSITION = 0,
+    RIGHT_SHORT_POSITION,
+
+    LAST_SHORT_POSITION
 };
 
 

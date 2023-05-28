@@ -40,9 +40,18 @@ void render_T_cell(RGB bitmap[KEY_NUM], int8_t cell) {
     if (cell < 0) {
         return;
     }
-    bitmap[cell].r = 0xE6;
-    bitmap[cell].g = 0xE6;
-    bitmap[cell].b = 0xFA;
+    bitmap[cell].r = 0x80;
+    bitmap[cell].g = 0x00;
+    bitmap[cell].b = 0x80;
+}
+
+void render_RZ_cell(RGB bitmap[KEY_NUM], int8_t cell) {
+    if (cell < 0) {
+        return;
+    }
+    bitmap[cell].r = 0x00;
+    bitmap[cell].g = 0x80;
+    bitmap[cell].b = 0x00;
 }
 
 void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
@@ -58,6 +67,12 @@ void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
             render_T_cell(bitmap, (*figure).p2);
             render_T_cell(bitmap, (*figure).p3);
             render_T_cell(bitmap, (*figure).p4);
+            break;
+        case RZ:
+            render_RZ_cell(bitmap, (*figure).p1);
+            render_RZ_cell(bitmap, (*figure).p2);
+            render_RZ_cell(bitmap, (*figure).p3);
+            render_RZ_cell(bitmap, (*figure).p4);
             break;
     }
 }
@@ -85,6 +100,12 @@ void spawn_figure(void) {
             next_figure.p2 = T_FIGURE_SPAWN_P2;
             next_figure.p3 = T_FIGURE_SPAWN_P3;
             next_figure.p4 = T_FIGURE_SPAWN_P4;
+            break;
+        case RZ:
+            next_figure.p1 = RZ_FIGURE_SPAWN_P1;
+            next_figure.p2 = RZ_FIGURE_SPAWN_P2;
+            next_figure.p3 = RZ_FIGURE_SPAWN_P3;
+            next_figure.p4 = RZ_FIGURE_SPAWN_P4;
             break;
         default:
             next_figure.p1 = 0;
@@ -196,51 +217,54 @@ void tetris_move_right() {
     next_figure.p4 -= 10;
 }
 
-void rotate_next_figure_as_T_up_right(void) {
-    next_figure.p1 = next_figure.p2;
-    next_figure.p2 = next_figure.p4;
-    next_figure.p4 = next_figure.p3 + 1;
-
-    next_figure.position_type = RIGHT_POSITION;
-}
-
-void rotate_next_figure_as_T_right_down(void) {
-    next_figure.p1 = next_figure.p2;
-    next_figure.p2 = next_figure.p4;
-    next_figure.p4 = next_figure.p3 + 10;
-
-    next_figure.position_type = DOWN_POSITION;
-}
-
-void rotate_next_figure_as_T_down_left(void) {
-    next_figure.p1 = next_figure.p2;
-    next_figure.p2 = next_figure.p4;
-    next_figure.p4 = next_figure.p3 - 1;
-
-    next_figure.position_type = LEFT_POSITION;
-}
-
-void rotate_next_figure_as_T_left_up(void) {
-    next_figure.p1 = next_figure.p2;
-    next_figure.p2 = next_figure.p4;
-    next_figure.p4 = next_figure.p3 - 10;
-
-    next_figure.position_type = UP_POSITION;
-}
-
 void rotate_next_figure_as_T(void) {
+    next_figure.position_type = (next_figure.position_type+1) % LAST_POSITION;
+    next_figure.p1 = next_figure.p2;
+    next_figure.p2 = next_figure.p4;
     switch (next_figure.position_type) {
-        case UP_POSITION:
-            rotate_next_figure_as_T_up_right();
-            break;
         case RIGHT_POSITION:
-            rotate_next_figure_as_T_right_down();
+            next_figure.p4 = next_figure.p3 + 1;
             break;
         case DOWN_POSITION:
-            rotate_next_figure_as_T_down_left();
+            next_figure.p4 = next_figure.p3 + 10;
             break;
         case LEFT_POSITION:
-            rotate_next_figure_as_T_left_up();
+            next_figure.p4 = next_figure.p3 - 1;
+            break;
+        case UP_POSITION:
+            next_figure.p4 = next_figure.p3 - 10;
+            break;
+    }
+}
+
+void rotate_next_figure_as_RZ(void) {
+    next_figure.position_type = (next_figure.position_type+1) % LAST_SHORT_POSITION;
+    switch (next_figure.position_type) {
+        case RIGHT_SHORT_POSITION:
+            next_figure.p4 = next_figure.p2;
+            next_figure.p2 = next_figure.p3 - 10;
+            next_figure.p1 = next_figure.p3 - 11;
+            break;
+        case UP_SHORT_POSITION:
+            next_figure.p4 = next_figure.p3 - 10;
+            next_figure.p2 = next_figure.p3 + 1;
+            next_figure.p1 = next_figure.p3 + 11;
+            break;
+    }
+}
+
+void rotate_next_figure_as_I(void) {
+    next_figure.position_type = (next_figure.position_type+1) % LAST_SHORT_POSITION;
+    switch (next_figure.position_type) {
+        case RIGHT_SHORT_POSITION:
+            next_figure.p1 = next_figure.p3 + 20;
+            next_figure.p2 = next_figure.p3 + 10;
+            next_figure.p4 = next_figure.p3 - 10;
+            break;
+        case UP_SHORT_POSITION:
+            next_figure.p1 = next_figure.p3 - 2;
+            next_figure.p2 = next_figure.p3 - 1;
+            next_figure.p4 = next_figure.p3 + 1;
             break;
     }
 
@@ -250,6 +274,12 @@ void tetris_rotate() {
     switch(next_figure.type) {
         case T:
             rotate_next_figure_as_T();
+            break;
+        case RZ:
+            rotate_next_figure_as_RZ();
+            break;
+        case I:
+            rotate_next_figure_as_I();
             break;
     }
 }
