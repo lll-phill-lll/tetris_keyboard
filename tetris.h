@@ -24,6 +24,8 @@
 #define DOWN_CELL_1_COL 67
 #define DOWN_CELL_2_COL 58
 
+static const uint8_t initial_last_row_cells[] = {9, 19, 29, 39, 49, 58, 67};
+
 
 
 enum figure_type {
@@ -54,6 +56,9 @@ typedef struct _tetris_state_t {
     char can_move_right;
     uint32_t anim_counter;
     uint32_t ms_per_move;
+    figure_t saved_figures[20];
+    uint8_t last_saved_figure_index;
+    uint8_t last_free_cell_in_col[7];
 
 } tetris_state_t;
 

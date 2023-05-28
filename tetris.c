@@ -12,17 +12,11 @@ void init_tetris_state() {
     tetris_state.can_move_right = 0;
     tetris_state.anim_counter = 1200;
     tetris_state.ms_per_move = 1200;
-}
+    tetris_state.last_saved_figure_index = 0;
 
-char is_cell_last_row(uint8_t cell) {
-    return cell % 10 == 9 || cell == DOWN_CELL_1_COL || cell == DOWN_CELL_2_COL;
-}
-
-char is_next_figure_reached_end(void) {
-    return is_cell_last_row(next_figure.p1)
-        || is_cell_last_row(next_figure.p2)
-        || is_cell_last_row(next_figure.p3)
-        || is_cell_last_row(next_figure.p4);
+    uint8_t* p = tetris_state.last_free_cell_in_col;
+    *p++ = 9; *p++ = 19; *p++ = 29; *p++ = 39;
+    *p++ = 49; *p++ = 58; *p++ = 67;
 }
 
 void move_figure_down(void) {
@@ -86,6 +80,18 @@ void spawn_figure(void) {
     return;
 }
 
+char is_next_figure_can_move_down(void) {
+    uint8_t p1_col = next_figure.p1 / 10;
+    uint8_t p2_col = next_figure.p2 / 10;
+    uint8_t p3_col = next_figure.p3 / 10;
+    uint8_t p4_col = next_figure.p4 / 10;
+
+    return tetris_state.last_free_cell_in_col[p1_col] != next_figure.p1
+        && tetris_state.last_free_cell_in_col[p2_col] != next_figure.p2
+        && tetris_state.last_free_cell_in_col[p3_col] != next_figure.p3
+        && tetris_state.last_free_cell_in_col[p4_col] != next_figure.p4;
+}
+
 void do_move(void) {
     if (tetris_state.has_moving_figure == 0) {
         spawn_figure();
@@ -93,9 +99,9 @@ void do_move(void) {
         tetris_state.can_move_left = 1;
         tetris_state.can_move_right = 1;
     } else {
-        move_figure_down();
-
-        if (is_next_figure_reached_end()) {
+        if (is_next_figure_can_move_down()) {
+            move_figure_down();
+        } else {
             tetris_state.has_moving_figure = 0;
         }
     }
