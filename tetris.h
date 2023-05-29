@@ -83,6 +83,8 @@ typedef struct _tetris_state_t {
     int8_t last_free_cell_in_col[7];
     char is_paused;
 
+    int8_t taken_cells[KEY_NUM];
+
 
 } tetris_state_t;
 

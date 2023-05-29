@@ -18,6 +18,10 @@ void init_tetris_state() {
     int8_t* p = &tetris_state.last_free_cell_in_col[0];
     *p++ = 9; *p++ = 19; *p++ = 29; *p++ = 39;
     *p++ = 49; *p++ = 58; *p++ = 67;
+
+    for (uint8_t i = 0; i != KEY_NUM; ++i) {
+        tetris_state.taken_cells[i] = 0;
+    }
 }
 
 void move_figure_down(void) {
@@ -140,6 +144,11 @@ void freeze_next_figure(void) {
     (*saved_figure).p3 = next_figure.p3;
     (*saved_figure).p4 = next_figure.p4;
     (*saved_figure).type = next_figure.type;
+
+    tetris_state.taken_cells[next_figure.p1] = 1;
+    tetris_state.taken_cells[next_figure.p2] = 1;
+    tetris_state.taken_cells[next_figure.p3] = 1;
+    tetris_state.taken_cells[next_figure.p4] = 1;
 }
 
 void update_last_free_col_with_cell(int8_t cell) {
@@ -175,7 +184,6 @@ void do_move(void) {
             tetris_state.has_moving_figure = 0;
         }
     }
-
 }
 
 void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]) {
@@ -241,9 +249,9 @@ void rotate_next_figure_as_RZ(void) {
     next_figure.position_type = (next_figure.position_type+1) % LAST_SHORT_POSITION;
     switch (next_figure.position_type) {
         case RIGHT_SHORT_POSITION:
-            next_figure.p4 = next_figure.p2;
-            next_figure.p2 = next_figure.p3 - 10;
-            next_figure.p1 = next_figure.p3 - 11;
+            next_figure.p4 = next_figure.p3 + 1;
+            next_figure.p2 = next_figure.p3 + 10;
+            next_figure.p1 = next_figure.p3 + 9;
             break;
         case UP_SHORT_POSITION:
             next_figure.p4 = next_figure.p3 - 10;
@@ -267,7 +275,6 @@ void rotate_next_figure_as_I(void) {
             next_figure.p4 = next_figure.p3 + 1;
             break;
     }
-
 }
 
 void tetris_rotate() {
