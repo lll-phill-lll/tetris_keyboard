@@ -109,13 +109,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             init_tetris_state();
 			return false;
         case LEFT:
-            tetris_move_left();
+            tetris_register_move(MOVE_LEFT);
             return false;
         case ROTATE:
-            tetris_rotate();
+            tetris_register_move(MOVE_ROTATE);
             return false;
         case RIGHT:
-            tetris_move_right();
+            tetris_register_move(MOVE_RIGHT);
             return false;
         case PAUSE:
             tetris_pause();
@@ -133,5 +133,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 void keyboard_post_init_user(void) {
+    rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_MULTISPLASH + 1);
     init_tetris_state();
 }
