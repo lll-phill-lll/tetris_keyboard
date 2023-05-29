@@ -8,52 +8,20 @@ figure_t next_figure;
 
 void init_tetris_state() {
     tetris_state.has_moving_figure = 0;
-    tetris_state.anim_counter = 50;
-    tetris_state.ms_per_move = 50;
-    tetris_state.move_down_counter = 800;
-    tetris_state.ms_per_move_down = 800;
+    tetris_state.can_move_left = 0;
+    tetris_state.can_move_right = 0;
+    tetris_state.anim_counter = 1200;
+    tetris_state.ms_per_move = 1200;
     tetris_state.last_saved_figure_index = -1;
     tetris_state.is_paused = 0;
-    tetris_state.next_move = MOVE_NONE;
 
-    for (uint8_t i = 0; i != PLAY_FIELD_SIZE; ++i) {
-        tetris_state.field[i] = 0;
-    }
-    // set corner unexisting keys to taken
-    tetris_state.field[50] = -1;
-    tetris_state.field[60] = -1;
-    tetris_state.field[61] = -1;
-    tetris_state.field[59] = -1;
-    tetris_state.field[68] = -1;
-    tetris_state.field[69] = -1;
-}
+    int8_t* p = &tetris_state.last_free_cell_in_col[0];
+    *p++ = 9; *p++ = 19; *p++ = 29; *p++ = 39;
+    *p++ = 49; *p++ = 58; *p++ = 67;
 
-char is_transition_allowed(int8_t from, int8_t to) {
-    if (tetris_state.field[to] != 0) {
-        return 0;
+    for (uint8_t i = 0; i != KEY_NUM; ++i) {
+        tetris_state.taken_cells[i] = 0;
     }
-    // check that figure doesnt fall down
-    if (from % 10 == 9 && to % 10 == 0) {
-        return 0;
-    }
-
-    // check that figure doesnt collide with right wall
-    if (from / 10 == 0 && to / 10 == 6) {
-        return 0;
-    }
-
-    // check that figure doesnt collide with left wall
-    if (from / 10 == 6 && to / 10 == 0) {
-        return 0;
-    }
-    return 1;
-}
-
-char is_move_legal(figure_t* figure, int8_t p1_new, int8_t p2_new, int8_t p3_new, int8_t p4_new) {
-    return is_transition_allowed(figure->p1, p1_new)
-        && is_transition_allowed(figure->p2, p2_new)
-        && is_transition_allowed(figure->p3, p3_new)
-        && is_transition_allowed(figure->p4, p4_new);
 }
 
 void move_figure_down(void) {
@@ -157,6 +125,17 @@ int8_t get_cells_col(int8_t cell) {
     return cell / 10;
 }
 
+char is_next_figure_can_move_down(void) {
+    int8_t p1_col = get_cells_col(next_figure.p1);
+    int8_t p2_col = get_cells_col(next_figure.p2);
+    int8_t p3_col = get_cells_col(next_figure.p3);
+    int8_t p4_col = get_cells_col(next_figure.p4);
+
+    return tetris_state.last_free_cell_in_col[p1_col] != next_figure.p1
+        && tetris_state.last_free_cell_in_col[p2_col] != next_figure.p2
+        && tetris_state.last_free_cell_in_col[p3_col] != next_figure.p3
+        && tetris_state.last_free_cell_in_col[p4_col] != next_figure.p4;
+}
 
 void freeze_next_figure(void) {
     figure_t* saved_figure = &tetris_state.saved_figures[++tetris_state.last_saved_figure_index];
@@ -166,26 +145,25 @@ void freeze_next_figure(void) {
     (*saved_figure).p4 = next_figure.p4;
     (*saved_figure).type = next_figure.type;
 
-    tetris_state.field[next_figure.p1] = 1;
-    tetris_state.field[next_figure.p2] = 1;
-    tetris_state.field[next_figure.p3] = 1;
-    tetris_state.field[next_figure.p4] = 1;
+    tetris_state.taken_cells[next_figure.p1] = 1;
+    tetris_state.taken_cells[next_figure.p2] = 1;
+    tetris_state.taken_cells[next_figure.p3] = 1;
+    tetris_state.taken_cells[next_figure.p4] = 1;
 }
 
-char do_move_if_possible(figure_t* figure, int8_t p1_new, int8_t p2_new, int8_t p3_new, int8_t p4_new){
-    if (!is_move_legal(figure, p1_new, p2_new, p3_new, p4_new)) {
-        return 0;
+void update_last_free_col_with_cell(int8_t cell) {
+    int8_t cells_col = get_cells_col(cell);
+    // less = closer to the top
+    if (cell < tetris_state.last_free_cell_in_col[cells_col]) {
+        tetris_state.last_free_cell_in_col[cells_col] = cell - 1;
     }
-    figure->p1 = p1_new;
-    figure->p2 = p2_new;
-    figure->p3 = p3_new;
-    figure->p4 = p4_new;
-    return 1;
-
 }
 
-char move_down_if_possible(figure_t* figure) {
-    return do_move_if_possible(figure, figure->p1+1, figure->p2+1, figure->p3+1, figure->p4+1);
+void update_last_free_cols(void) {
+    update_last_free_col_with_cell(next_figure.p1);
+    update_last_free_col_with_cell(next_figure.p2);
+    update_last_free_col_with_cell(next_figure.p3);
+    update_last_free_col_with_cell(next_figure.p4);
 }
 
 void do_move(void) {
@@ -195,58 +173,56 @@ void do_move(void) {
     if (tetris_state.has_moving_figure == 0) {
         spawn_figure();
         tetris_state.has_moving_figure = 1;
+        tetris_state.can_move_left = 1;
+        tetris_state.can_move_right = 1;
     } else {
-        switch(tetris_state.next_move) {
-            case MOVE_RIGHT:
-                tetris_move_right();
-                break;
-            case MOVE_LEFT:
-                tetris_move_left();
-                break;
-            case MOVE_ROTATE:
-                tetris_rotate();
-                break;
-            default:
-                break;
+        if (is_next_figure_can_move_down()) {
+            move_figure_down();
+        } else {
+            freeze_next_figure();
+            update_last_free_cols();
+            tetris_state.has_moving_figure = 0;
         }
     }
-    tetris_state.next_move = MOVE_NONE;
 }
 
 void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]) {
     if (tetris_state.anim_counter > delta_time) {
         tetris_state.anim_counter -= delta_time;
     } else {
-        if (tetris_state.move_down_counter > delta_time) {
-            tetris_state.move_down_counter -= delta_time;
-            uint32_t remaining = delta_time - tetris_state.anim_counter;
-            tetris_state.anim_counter = tetris_state.ms_per_move + remaining;
-            do_move();
-        } else {
-            uint32_t move_down_remaining = delta_time - tetris_state.move_down_counter;
-            tetris_state.move_down_counter = tetris_state.ms_per_move_down + move_down_remaining;
-            tetris_move_down();
-        }
+        uint32_t remaining = delta_time - tetris_state.anim_counter;
+        tetris_state.anim_counter = tetris_state.ms_per_move + remaining;
+        do_move();
     }
 
     render_field(bitmap);
 
 }
 
+char is_cell_on_left_edge(int8_t cell) {
+    return cell / 10 == 6 || cell == LEFT_CELL_1_ROW || cell == LEFT_CELL_2_ROW || cell == LEFT_CELL_9_ROW || cell == LEFT_CELL_10_ROW;
+}
+
+char is_next_figure_reached_left_edge(void) {
+    return is_cell_on_left_edge(next_figure.p1)
+        || is_cell_on_left_edge(next_figure.p2)
+        || is_cell_on_left_edge(next_figure.p3)
+        || is_cell_on_left_edge(next_figure.p4);
+}
+
 void tetris_move_left() {
-    do_move_if_possible(&next_figure,
-            next_figure.p1+10,
-            next_figure.p2+10,
-            next_figure.p3+10,
-            next_figure.p4+10);
+    next_figure.p1 += 10;
+    next_figure.p2 += 10;
+    next_figure.p3 += 10;
+    next_figure.p4 += 10;
+
 }
 
 void tetris_move_right() {
-    do_move_if_possible(&next_figure,
-            next_figure.p1-10,
-            next_figure.p2-10,
-            next_figure.p3-10,
-            next_figure.p4-10);
+    next_figure.p1 -= 10;
+    next_figure.p2 -= 10;
+    next_figure.p3 -= 10;
+    next_figure.p4 -= 10;
 }
 
 void rotate_next_figure_as_T(void) {
@@ -321,18 +297,4 @@ void tetris_pause() {
     } else {
         tetris_state.is_paused = 1;
     }
-}
-
-void tetris_move_down() {
-    if (tetris_state.is_paused) {
-        return;
-    }
-    if (!move_down_if_possible(&next_figure)) {
-        freeze_next_figure();
-        tetris_state.has_moving_figure = 0;
-    }
-}
-
-void tetris_register_move(uint8_t move) {
-    tetris_state.next_move = move;
 }

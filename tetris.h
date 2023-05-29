@@ -3,7 +3,6 @@
 #include "color.h"
 
 #define KEY_NUM 72
-#define PLAY_FIELD_SIZE 70
 
 #define I_FIGURE_SPAWN_P1 30
 #define I_FIGURE_SPAWN_P2 31
@@ -30,8 +29,12 @@
 #define DOWN_CELL_1_COL 67
 #define DOWN_CELL_2_COL 58
 
+static const uint8_t initial_last_row_cells[] = {9, 19, 29, 39, 49, 58, 67};
+
+
+
 enum figure_type {
-    T = 1,
+    T = 0,
     I,
     RZ,
     // O,
@@ -49,14 +52,6 @@ enum positoin_type {
     LEFT_POSITION,
 
     LAST_POSITION
-};
-
-enum next_move {
-    MOVE_NONE = 0,
-    MOVE_LEFT,
-    MOVE_RIGHT,
-    MOVE_DOWN,
-    MOVE_ROTATE
 };
 
 enum short_positoin_type {
@@ -79,16 +74,16 @@ typedef struct _figure_t {
 
 typedef struct _tetris_state_t {
     char has_moving_figure;
+    char can_move_left;
+    char can_move_right;
     uint32_t anim_counter;
     uint32_t ms_per_move;
-    uint32_t move_down_counter;
-    uint32_t ms_per_move_down;
     figure_t saved_figures[20];
     int8_t last_saved_figure_index;
+    int8_t last_free_cell_in_col[7];
     char is_paused;
-    uint8_t next_move;
 
-    int8_t field[PLAY_FIELD_SIZE];
+    int8_t taken_cells[KEY_NUM];
 
 
 } tetris_state_t;
@@ -99,10 +94,7 @@ void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]);
 
 void tetris_move_left(void);
 void tetris_move_right(void);
-void tetris_move_down(void);
 
 void tetris_rotate(void);
 
 void tetris_pause(void);
-
-void tetris_register_move(uint8_t move);
