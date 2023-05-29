@@ -14,7 +14,7 @@ RGB_MATRIX_EFFECT(tetris)
 
 uint8_t red_pos = 0;
 
-#define FPS 20
+#define FPS 12
 uint32_t timer = 0;
 uint32_t last_updated = 0;
 RGB bitmap[KEY_NUM];
