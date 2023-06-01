@@ -132,6 +132,18 @@ void render_field(RGB bitmap[KEY_NUM]) {
     render_figure(bitmap, &next_figure);
 }
 
+void process_game_over(void) {
+    init_tetris_state();
+}
+
+
+void game_over_if_cant_spawn_figure(int8_t p1, int8_t p2, int8_t p3, int8_t p4) {
+    if (tetris_state.field[p1] || tetris_state.field[p2] ||tetris_state.field[p3] ||tetris_state.field[p4]) {
+        process_game_over();
+    }
+
+}
+
 void spawn_figure(void) {
     next_figure.type = T + rand() % (LAST_TYPE - T);
     next_figure.position_type = UP_POSITION;
@@ -161,6 +173,8 @@ void spawn_figure(void) {
             next_figure.p4 = 0;
             break;
     }
+    game_over_if_cant_spawn_figure(next_figure.p1,
+            next_figure.p2, next_figure.p3, next_figure.p4);
     return;
 }
 
@@ -202,8 +216,25 @@ void remove_full_lines(void) {
             ++row;
         }
     }
-
 }
+
+char is_game_over(void) {
+    // if figure doesn't fit into screen
+    // one of it's coodinates will be on the last row
+    // and another on the first
+    char has_first_row_cell = 0;
+    char has_last_row_cell = 0;
+    if (next_figure.p1 % 10 == 0 || next_figure.p2 % 10 == 0 || next_figure.p3 % 10 == 0 || next_figure.p4 % 10 == 0) {
+        has_first_row_cell = 1;
+    }
+
+    if (next_figure.p1 % 10 == 9 || next_figure.p2 % 10 == 9 || next_figure.p3 % 10 == 9 || next_figure.p4 % 10 == 9) {
+        has_last_row_cell = 1;
+    }
+
+    return has_last_row_cell && has_first_row_cell;
+}
+
 
 
 void freeze_next_figure(void) {
@@ -373,7 +404,13 @@ void tetris_move_down() {
     if (tetris_state.is_paused) {
         return;
     }
+    // if we can't move figure down freeze it, check for game over
+    // and spawn new figure
     if (!move_down_if_possible(&next_figure)) {
+        if (is_game_over()) {
+            process_game_over();
+            return;
+        }
         freeze_next_figure();
         tetris_state.has_moving_figure = 0;
     }
