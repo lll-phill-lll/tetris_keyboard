@@ -40,6 +40,8 @@
 #define Z_FIGURE_SPAWN_P3 30
 #define Z_FIGURE_SPAWN_P4 40
 
+#define FIGURES_NUMBER 7
+
 enum figure_type {
     NONE_FIGURE = 0,
     T,
@@ -100,8 +102,12 @@ typedef struct _tetris_state_t {
     int8_t field[PLAY_FIELD_SIZE];
 
     char is_game_over;
-
-
+    // used for tetris like Random Generator.
+    // 2 arrays used to show next figure correctly
+    // when it's last figure of array
+    int8_t random_figures_1[LAST_TYPE - 1];
+    int8_t random_figures_2[LAST_TYPE - 1];
+    uint8_t random_figure_index;
 } tetris_state_t;
 
 void init_tetris_state(void);

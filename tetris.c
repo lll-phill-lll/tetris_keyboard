@@ -2,9 +2,10 @@
 
 #include "tetris.h"
 
-
 tetris_state_t tetris_state;
 figure_t next_figure;
+
+void shuffle_array(int8_t arr[], int8_t size);
 
 void init_tetris_state() {
     tetris_state.has_moving_figure = 0;
@@ -15,6 +16,7 @@ void init_tetris_state() {
     tetris_state.is_paused = 0;
     tetris_state.next_move = MOVE_NONE;
     tetris_state.is_game_over = 0;
+    tetris_state.random_figure_index = 0;
 
     for (uint8_t i = 0; i != PLAY_FIELD_SIZE; ++i) {
         tetris_state.field[i] = 0;
@@ -26,6 +28,25 @@ void init_tetris_state() {
     tetris_state.field[59] = -1;
     tetris_state.field[68] = -1;
     tetris_state.field[69] = -1;
+
+    for (uint8_t i = T; i < LAST_TYPE; ++i) {
+        tetris_state.random_figures_1[i - 1] = i;
+        tetris_state.random_figures_2[i - 1] = i;
+    }
+    // shuffle only first array, second will be shuffled while generating random
+    // figure
+    shuffle_array(tetris_state.random_figures_1, FIGURES_NUMBER);
+}
+
+// use Fisher–Yates to shuffle
+void shuffle_array(int8_t arr[], int8_t size) {
+    for (int8_t i = size - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+
+        int8_t tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
 }
 
 char is_transition_allowed(int8_t from, int8_t to) {
@@ -216,11 +237,30 @@ void game_over_if_cant_spawn_figure(int8_t p1, int8_t p2, int8_t p3, int8_t p4) 
     if (tetris_state.field[p1] || tetris_state.field[p2] ||tetris_state.field[p3] ||tetris_state.field[p4]) {
         process_game_over();
     }
+}
 
+int8_t get_random_figure_type(void) {
+    int8_t type;
+    if (tetris_state.random_figure_index < FIGURES_NUMBER) {
+        type = tetris_state.random_figures_1[tetris_state.random_figure_index];
+    } else {
+        type = tetris_state.random_figures_2[tetris_state.random_figure_index - FIGURES_NUMBER];
+    }
+
+    // shuffle other array in case of change
+    if (tetris_state.random_figure_index == 0) {
+        shuffle_array(tetris_state.random_figures_2, FIGURES_NUMBER);
+    } else if (tetris_state.random_figure_index == FIGURES_NUMBER) {
+        shuffle_array(tetris_state.random_figures_1, FIGURES_NUMBER);
+    }
+
+    ++tetris_state.random_figure_index;
+
+    return type;
 }
 
 void spawn_figure(void) {
-    next_figure.type = T + rand() % (LAST_TYPE - T);
+    next_figure.type = get_random_figure_type();
     next_figure.position_type = UP_POSITION;
     switch (next_figure.type) {
         case I:
