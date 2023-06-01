@@ -12,11 +12,10 @@ void init_tetris_state() {
     tetris_state.ms_per_move = 50;
     tetris_state.move_down_counter = 800;
     tetris_state.ms_per_move_down = 800;
-    tetris_state.last_saved_figure_index = -1;
     tetris_state.is_paused = 0;
     tetris_state.next_move = MOVE_NONE;
 
-    for (uint8_t i = 0; i != 72; ++i) {
+    for (uint8_t i = 0; i != PLAY_FIELD_SIZE; ++i) {
         tetris_state.field[i] = 0;
     }
     // set corner unexisting keys to taken
@@ -115,11 +114,22 @@ void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
 }
 
 void render_field(RGB bitmap[KEY_NUM]) {
-    render_figure(bitmap, &next_figure);
-
-    for (uint8_t i = 0; i <= tetris_state.last_saved_figure_index; ++i) {
-        render_figure(bitmap, &tetris_state.saved_figures[i]);
+    for (int8_t i = 0; i < PLAY_FIELD_SIZE; ++i) {
+        switch (tetris_state.field[i]) {
+            case I:
+                render_I_cell(bitmap, i);
+                break;
+            case T:
+                render_T_cell(bitmap, i);
+                break;
+            case RZ:
+                render_RZ_cell(bitmap, i);
+                break;
+            default:
+                break;
+        }
     }
+    render_figure(bitmap, &next_figure);
 }
 
 void spawn_figure(void) {
@@ -160,17 +170,10 @@ int8_t get_cells_col(int8_t cell) {
 
 
 void freeze_next_figure(void) {
-    figure_t* saved_figure = &tetris_state.saved_figures[++tetris_state.last_saved_figure_index];
-    (*saved_figure).p1 = next_figure.p1;
-    (*saved_figure).p2 = next_figure.p2;
-    (*saved_figure).p3 = next_figure.p3;
-    (*saved_figure).p4 = next_figure.p4;
-    (*saved_figure).type = next_figure.type;
-
-    tetris_state.field[next_figure.p1] = 1;
-    tetris_state.field[next_figure.p2] = 1;
-    tetris_state.field[next_figure.p3] = 1;
-    tetris_state.field[next_figure.p4] = 1;
+    tetris_state.field[next_figure.p1] = next_figure.type;
+    tetris_state.field[next_figure.p2] = next_figure.type;
+    tetris_state.field[next_figure.p3] = next_figure.type;
+    tetris_state.field[next_figure.p4] = next_figure.type;
 }
 
 char do_move_if_possible(figure_t* figure, int8_t p1_new, int8_t p2_new, int8_t p3_new, int8_t p4_new){

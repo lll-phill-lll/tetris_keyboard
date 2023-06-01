@@ -84,12 +84,10 @@ typedef struct _tetris_state_t {
     uint32_t ms_per_move;
     uint32_t move_down_counter;
     uint32_t ms_per_move_down;
-    figure_t saved_figures[20];
-    int8_t last_saved_figure_index;
     char is_paused;
     uint8_t next_move;
 
-    int8_t field[72];
+    int8_t field[PLAY_FIELD_SIZE];
 
 
 } tetris_state_t;
