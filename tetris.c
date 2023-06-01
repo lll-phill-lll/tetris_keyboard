@@ -168,12 +168,51 @@ int8_t get_cells_col(int8_t cell) {
     return cell / 10;
 }
 
+void remove_row(int8_t remove_row) {
+    for (int8_t row = remove_row; row >= 0; --row) {
+        for (int8_t i = 0; i <= 6; ++i) {
+            int8_t field_index = row + i * 10;
+            // skip missing keys on the keyboard
+            if (tetris_state.field[field_index] < 0) {
+                continue;
+            }
+
+            // if it's not the first row and if cell is not located under missing key
+            if (field_index % 10 && tetris_state.field[field_index - 1] >= 0) {
+                tetris_state.field[field_index] = tetris_state.field[field_index - 1];
+            } else {
+                tetris_state.field[field_index] = 0;
+            }
+        }
+    }
+}
+
+void remove_full_lines(void) {
+    for (int8_t row = 9; row >= 0; --row) {
+        char is_row_full = 1;
+        for (int8_t i = 0; i <= 6; ++i) {
+            // if at least one cell is empty multiplication result will be 0
+            is_row_full *= tetris_state.field[row + i * 10];
+
+        }
+
+        if (is_row_full) {
+            remove_row(row);
+            // process current row once again
+            ++row;
+        }
+    }
+
+}
+
 
 void freeze_next_figure(void) {
     tetris_state.field[next_figure.p1] = next_figure.type;
     tetris_state.field[next_figure.p2] = next_figure.type;
     tetris_state.field[next_figure.p3] = next_figure.type;
     tetris_state.field[next_figure.p4] = next_figure.type;
+
+    remove_full_lines();
 }
 
 char do_move_if_possible(figure_t* figure, int8_t p1_new, int8_t p2_new, int8_t p3_new, int8_t p4_new){
