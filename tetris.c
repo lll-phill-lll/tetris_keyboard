@@ -85,6 +85,14 @@ void move_figure_down(void) {
     next_figure.p4++;
 }
 
+int8_t predict_next_figure_type(void) {
+    if (tetris_state.random_figure_index < FIGURES_NUMBER) {
+        return tetris_state.random_figures_1[tetris_state.random_figure_index];
+    }
+    return tetris_state.random_figures_2[tetris_state.random_figure_index - FIGURES_NUMBER];
+
+}
+
 void render_I_cell(RGB bitmap[KEY_NUM], int8_t cell) {
     if (cell < 0) {
         return;
@@ -197,7 +205,17 @@ void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
     }
 }
 
+void add_predicted_next_figure_colors_to_field(void) {
+    int8_t predicted_next_figure = predict_next_figure_type();
+    tetris_state.field[50] = predicted_next_figure;
+    tetris_state.field[60] = predicted_next_figure;
+    tetris_state.field[61] = predicted_next_figure;
+    tetris_state.field[59] = predicted_next_figure;
+
+}
+
 void render_field(RGB bitmap[KEY_NUM]) {
+    add_predicted_next_figure_colors_to_field();
     for (int8_t i = 0; i < PLAY_FIELD_SIZE; ++i) {
         switch (tetris_state.field[i]) {
             case I:
@@ -652,3 +670,4 @@ void tetris_register_move(uint8_t move) {
 char is_game_over(void) {
     return tetris_state.is_game_over;
 }
+
