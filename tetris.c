@@ -201,7 +201,7 @@ void game_over_if_cant_spawn_figure(int8_t p1, int8_t p2, int8_t p3, int8_t p4) 
 }
 
 void spawn_figure(void) {
-    next_figure.type = J; // T + rand() % (LAST_TYPE - T);
+    next_figure.type = L; // T + rand() % (LAST_TYPE - T);
     next_figure.position_type = UP_POSITION;
     switch (next_figure.type) {
         case I:
@@ -466,24 +466,24 @@ void rotate_next_figure_as_L(void) {
     next_figure.position_type = (next_figure.position_type+1) % LAST_POSITION;
     switch (next_figure.position_type) {
         case RIGHT_POSITION:
-            next_figure.p1 = next_figure.p3 - 2;
-            next_figure.p2 = next_figure.p3 - 1;
-            next_figure.p4 = next_figure.p3 - 10;
+            next_figure.p1 = next_figure.p3 - 9;
+            next_figure.p2 = next_figure.p3 + 1;
+            next_figure.p4 = next_figure.p3 - 1;
             break;
         case DOWN_POSITION:
-            next_figure.p1 = next_figure.p3 - 20;
-            next_figure.p2 = next_figure.p3 - 10;
-            next_figure.p4 = next_figure.p3 + 1;
+            next_figure.p1 = next_figure.p3 + 11;
+            next_figure.p2 = next_figure.p3 + 10;
+            next_figure.p4 = next_figure.p3 - 10;
             break;
         case LEFT_POSITION:
-            next_figure.p1 = next_figure.p3 + 2;
-            next_figure.p2 = next_figure.p3 + 1;
-            next_figure.p4 = next_figure.p3 + 10;
+            next_figure.p1 = next_figure.p3 + 9;
+            next_figure.p2 = next_figure.p3 - 1;
+            next_figure.p4 = next_figure.p3 + 1;
             break;
         case UP_POSITION:
-            next_figure.p1 = next_figure.p3 + 20;
-            next_figure.p2 = next_figure.p3 + 10;
-            next_figure.p4 = next_figure.p3 - 1;
+            next_figure.p1 = next_figure.p3 - 11;
+            next_figure.p2 = next_figure.p3 - 10;
+            next_figure.p4 = next_figure.p3 + 10;
             break;
     }
 }
