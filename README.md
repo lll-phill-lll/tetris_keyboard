@@ -2,6 +2,8 @@
 
 # Description
 
+![General screenshot](/img/general.png)
+
 This is a fun project I developed while testing [QMK library](https://github.com/qmk/qmk_firmware) with ZSA moonlander.
 
 I was trying to implement custom layout and stumbled upon the article describing custom RGB-lighting and couldn't get past it.
@@ -43,6 +45,41 @@ keys are taken into account. So, you need to fill only 5 cells of the last row i
 
 1. Implementing custom [colorscheme](https://github.com/qmk/qmk_firmware/blob/b110a09886b9d27fea33de2a488e2b74d9baa27e/docs/feature_rgb_matrix.md).
 2. Implementing custom [sounds](https://github.com/qmk/qmk_firmware/blob/b110a09886b9d27fea33de2a488e2b74d9baa27e/docs/feature_audio.md).
+
+# Process
+
+Here you can see my tables.
+
+## Colors
+
+Top left table is initial colors to keys mapping. Next tables are my
+remaps (don't ask why such an order). Red keys are non-existing ones. These rows has less cells
+and we need to take it into account while calculating the collisions.
+
+## Rotations
+
+I used the simpliest possible rotation system. All the pieces are rotated around 3 cell.
+Kicks are not used. The only thing I check here is collisions with walls and other pieces.
+
+![Tables](/img/tables.png)
+
+## Code quality
+
+Sorry :(
+
+# Gifs
+
+### Game over
+
+![Game over](/img/gameover.gif)
+
+### Rotate
+
+![Rotate](/img/rotate.png)
+
+### Full gameplay
+
+![Full gameplay](/img/full_gameplay.png)
 
 # Acknowledgement
 
