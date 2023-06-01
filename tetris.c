@@ -82,12 +82,21 @@ void render_T_cell(RGB bitmap[KEY_NUM], int8_t cell) {
     bitmap[cell].b = 0x80;
 }
 
-void render_RZ_cell(RGB bitmap[KEY_NUM], int8_t cell) {
+void render_S_cell(RGB bitmap[KEY_NUM], int8_t cell) {
     if (cell < 0) {
         return;
     }
     bitmap[cell].r = 0x00;
     bitmap[cell].g = 0x80;
+    bitmap[cell].b = 0x00;
+}
+
+void render_O_cell(RGB bitmap[KEY_NUM], int8_t cell) {
+    if (cell < 0) {
+        return;
+    }
+    bitmap[cell].r = 0xFF;
+    bitmap[cell].g = 0xFF;
     bitmap[cell].b = 0x00;
 }
 
@@ -105,11 +114,19 @@ void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
             render_T_cell(bitmap, (*figure).p3);
             render_T_cell(bitmap, (*figure).p4);
             break;
-        case RZ:
-            render_RZ_cell(bitmap, (*figure).p1);
-            render_RZ_cell(bitmap, (*figure).p2);
-            render_RZ_cell(bitmap, (*figure).p3);
-            render_RZ_cell(bitmap, (*figure).p4);
+        case S:
+            render_S_cell(bitmap, (*figure).p1);
+            render_S_cell(bitmap, (*figure).p2);
+            render_S_cell(bitmap, (*figure).p3);
+            render_S_cell(bitmap, (*figure).p4);
+            break;
+        case O:
+            render_O_cell(bitmap, (*figure).p1);
+            render_O_cell(bitmap, (*figure).p2);
+            render_O_cell(bitmap, (*figure).p3);
+            render_O_cell(bitmap, (*figure).p4);
+            break;
+        default:
             break;
     }
 }
@@ -123,8 +140,11 @@ void render_field(RGB bitmap[KEY_NUM]) {
             case T:
                 render_T_cell(bitmap, i);
                 break;
-            case RZ:
-                render_RZ_cell(bitmap, i);
+            case S:
+                render_S_cell(bitmap, i);
+                break;
+            case O:
+                render_O_cell(bitmap, i);
                 break;
             default:
                 break;
@@ -161,11 +181,17 @@ void spawn_figure(void) {
             next_figure.p3 = T_FIGURE_SPAWN_P3;
             next_figure.p4 = T_FIGURE_SPAWN_P4;
             break;
-        case RZ:
-            next_figure.p1 = RZ_FIGURE_SPAWN_P1;
-            next_figure.p2 = RZ_FIGURE_SPAWN_P2;
-            next_figure.p3 = RZ_FIGURE_SPAWN_P3;
-            next_figure.p4 = RZ_FIGURE_SPAWN_P4;
+        case S:
+            next_figure.p1 = S_FIGURE_SPAWN_P1;
+            next_figure.p2 = S_FIGURE_SPAWN_P2;
+            next_figure.p3 = S_FIGURE_SPAWN_P3;
+            next_figure.p4 = S_FIGURE_SPAWN_P4;
+            break;
+        case O:
+            next_figure.p1 = O_FIGURE_SPAWN_P1;
+            next_figure.p2 = O_FIGURE_SPAWN_P2;
+            next_figure.p3 = O_FIGURE_SPAWN_P3;
+            next_figure.p4 = O_FIGURE_SPAWN_P4;
             break;
         default:
             next_figure.p1 = 0;
@@ -353,7 +379,7 @@ void rotate_next_figure_as_T(void) {
     }
 }
 
-void rotate_next_figure_as_RZ(void) {
+void rotate_next_figure_as_S(void) {
     next_figure.position_type = (next_figure.position_type+1) % LAST_SHORT_POSITION;
     switch (next_figure.position_type) {
         case RIGHT_SHORT_POSITION:
@@ -385,16 +411,23 @@ void rotate_next_figure_as_I(void) {
     }
 }
 
+void rotate_next_figure_as_O(void) {
+    return;
+}
+
 void tetris_rotate() {
     switch(next_figure.type) {
         case T:
             rotate_next_figure_as_T();
             break;
-        case RZ:
-            rotate_next_figure_as_RZ();
+        case S:
+            rotate_next_figure_as_S();
             break;
         case I:
             rotate_next_figure_as_I();
+            break;
+        case O:
+            rotate_next_figure_as_O();
             break;
     }
 }
@@ -417,6 +450,7 @@ void tetris_move_down() {
         }
         freeze_next_figure();
         tetris_state.has_moving_figure = 0;
+        tetris_state.next_move = MOVE_NONE;
     }
 }
 

@@ -15,29 +15,24 @@
 #define T_FIGURE_SPAWN_P3 31
 #define T_FIGURE_SPAWN_P4 21
 
-#define RZ_FIGURE_SPAWN_P1 41
-#define RZ_FIGURE_SPAWN_P2 31
-#define RZ_FIGURE_SPAWN_P3 30
-#define RZ_FIGURE_SPAWN_P4 20
+#define S_FIGURE_SPAWN_P1 41
+#define S_FIGURE_SPAWN_P2 31
+#define S_FIGURE_SPAWN_P3 30
+#define S_FIGURE_SPAWN_P4 20
 
-#define I_FIGURE_COLOR RGB_BLUE
-#define T_FIGURE_COLOR RGB_PURPLE
-
-#define LEFT_CELL_1_ROW 40
-#define LEFT_CELL_2_ROW 51
-#define LEFT_CELL_9_ROW 58
-#define LEFT_CELL_10_ROW 49
-#define DOWN_CELL_1_COL 67
-#define DOWN_CELL_2_COL 58
+#define O_FIGURE_SPAWN_P1 30
+#define O_FIGURE_SPAWN_P2 20
+#define O_FIGURE_SPAWN_P3 21
+#define O_FIGURE_SPAWN_P4 31
 
 enum figure_type {
     NONE_FIGURE = 0,
     T,
     I,
-    RZ,
-    // O,
+    S,
+    O,
     // L,
-    // LR,
+    // J,
     // Z,
 
     LAST_TYPE
