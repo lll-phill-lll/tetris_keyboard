@@ -17,6 +17,7 @@ void init_tetris_state() {
     tetris_state.next_move = MOVE_NONE;
     tetris_state.is_game_over = 0;
     tetris_state.random_figure_index = 0;
+    tetris_state.is_started = 0;
 
     for (uint8_t i = 0; i != PLAY_FIELD_SIZE; ++i) {
         tetris_state.field[i] = 0;
@@ -453,6 +454,9 @@ void do_move(int8_t next_move) {
 }
 
 void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]) {
+    if (!tetris_state.is_started) {
+        return;
+    }
     if (tetris_state.anim_counter > delta_time) {
         tetris_state.anim_counter -= delta_time;
     } else {
@@ -671,3 +675,10 @@ char is_game_over(void) {
     return tetris_state.is_game_over;
 }
 
+void tetris_start() {
+    tetris_state.is_started = 1;
+}
+
+void tetris_stop() {
+    tetris_state.is_started = 0;
+}

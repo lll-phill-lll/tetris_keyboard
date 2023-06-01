@@ -108,6 +108,8 @@ typedef struct _tetris_state_t {
     int8_t random_figures_1[LAST_TYPE - 1];
     int8_t random_figures_2[LAST_TYPE - 1];
     uint8_t random_figure_index;
+
+    char is_started;
 } tetris_state_t;
 
 void init_tetris_state(void);
@@ -125,3 +127,8 @@ void tetris_pause(void);
 void tetris_register_move(uint8_t move);
 
 char is_game_over(void);
+
+char tetris_is_started(void);
+
+void tetris_start(void);
+void tetris_stop(void);
