@@ -118,6 +118,15 @@ void render_J_cell(RGB bitmap[KEY_NUM], int8_t cell) {
     bitmap[cell].b = 0xFF;
 }
 
+void render_Z_cell(RGB bitmap[KEY_NUM], int8_t cell) {
+    if (cell < 0) {
+        return;
+    }
+    bitmap[cell].r = 0xFF;
+    bitmap[cell].g = 0x00;
+    bitmap[cell].b = 0x00;
+}
+
 void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
     switch((*figure).type) {
         case I:
@@ -155,6 +164,13 @@ void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
             render_J_cell(bitmap, (*figure).p2);
             render_J_cell(bitmap, (*figure).p3);
             render_J_cell(bitmap, (*figure).p4);
+            break;
+        case Z:
+            render_Z_cell(bitmap, (*figure).p1);
+            render_Z_cell(bitmap, (*figure).p2);
+            render_Z_cell(bitmap, (*figure).p3);
+            render_Z_cell(bitmap, (*figure).p4);
+            break;
         default:
             break;
     }
@@ -181,6 +197,9 @@ void render_field(RGB bitmap[KEY_NUM]) {
             case J:
                 render_J_cell(bitmap, i);
                 break;
+            case Z:
+                render_Z_cell(bitmap, i);
+                break;
             default:
                 break;
         }
@@ -201,7 +220,7 @@ void game_over_if_cant_spawn_figure(int8_t p1, int8_t p2, int8_t p3, int8_t p4) 
 }
 
 void spawn_figure(void) {
-    next_figure.type = L; // T + rand() % (LAST_TYPE - T);
+    next_figure.type = T + rand() % (LAST_TYPE - T);
     next_figure.position_type = UP_POSITION;
     switch (next_figure.type) {
         case I:
@@ -239,6 +258,12 @@ void spawn_figure(void) {
             next_figure.p2 = J_FIGURE_SPAWN_P2;
             next_figure.p3 = J_FIGURE_SPAWN_P3;
             next_figure.p4 = J_FIGURE_SPAWN_P4;
+            break;
+        case Z:
+            next_figure.p1 = Z_FIGURE_SPAWN_P1;
+            next_figure.p2 = Z_FIGURE_SPAWN_P2;
+            next_figure.p3 = Z_FIGURE_SPAWN_P3;
+            next_figure.p4 = Z_FIGURE_SPAWN_P4;
             break;
         default:
             next_figure.p1 = 0;
@@ -514,6 +539,22 @@ void rotate_next_figure_as_J(void) {
     }
 }
 
+void rotate_next_figure_as_Z(void) {
+    next_figure.position_type = (next_figure.position_type+1) % LAST_SHORT_POSITION;
+    switch (next_figure.position_type) {
+        case RIGHT_SHORT_POSITION:
+            next_figure.p4 = next_figure.p3 - 1;
+            next_figure.p2 = next_figure.p3 + 10;
+            next_figure.p1 = next_figure.p3 + 11;
+            break;
+        case UP_SHORT_POSITION:
+            next_figure.p4 = next_figure.p3 + 10;
+            next_figure.p2 = next_figure.p3 + 1;
+            next_figure.p1 = next_figure.p3 - 9;
+            break;
+    }
+}
+
 void tetris_rotate() {
     switch(next_figure.type) {
         case T:
@@ -533,6 +574,9 @@ void tetris_rotate() {
             break;
         case J:
             rotate_next_figure_as_J();
+            break;
+        case Z:
+            rotate_next_figure_as_Z();
             break;
         default:
             break;
