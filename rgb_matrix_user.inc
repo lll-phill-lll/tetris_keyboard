@@ -83,6 +83,8 @@ void process_game_over_animation(void) {
       }
 }
 
+float lose_song[][2] = SONG(MINOR_SOUND);
+
 
 // e.g: A simple effect, self-contained within a single method
 static bool tetris(effect_params_t* params) {
@@ -101,6 +103,11 @@ static bool tetris(effect_params_t* params) {
       uint32_t delta_time = timer_elapsed32(last_updated);
       get_next_move(delta_time, bitmap);
       if (is_game_over()) {
+          if (game_over_current_animation_step == 0) {
+#ifdef AUDIO_ENABLE
+              PLAY_SONG(lose_song);
+#endif
+          }
           process_game_over_animation();
       }
       last_updated = timer_read32();

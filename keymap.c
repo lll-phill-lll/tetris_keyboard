@@ -77,8 +77,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tetris_start();
 #ifdef AUDIO_ENABLE
             PLAY_LOOP(tetris_song);
-            return false;
 #endif
+            return false;
         }
 
     }
