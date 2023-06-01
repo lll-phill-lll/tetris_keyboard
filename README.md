@@ -43,3 +43,8 @@ keys are taken into account. So, you need to fill only 5 cells of the last row i
 
 1. Implementing custom [colorscheme](https://github.com/qmk/qmk_firmware/blob/b110a09886b9d27fea33de2a488e2b74d9baa27e/docs/feature_rgb_matrix.md).
 2. Implementing custom [sounds](https://github.com/qmk/qmk_firmware/blob/b110a09886b9d27fea33de2a488e2b74d9baa27e/docs/feature_audio.md).
+
+# Acknowledgement
+
+I found this [repo](https://github.com/rgoulter/qmk_firmware/tree/rgbmatrix-snake/layouts/community/planck_mit/rgbmatrix-snake) somewhere on reddit:  and it was superuseful and helped me a lot
+to understand QMK library. Shutout to rgoulter.
