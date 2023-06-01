@@ -31,7 +31,8 @@
 #define DOWN_CELL_2_COL 58
 
 enum figure_type {
-    T = 0,
+    NONE_FIGURE = 0,
+    T,
     I,
     RZ,
     // O,

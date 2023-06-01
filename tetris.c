@@ -32,13 +32,14 @@ char is_transition_allowed(int8_t from, int8_t to) {
     if (tetris_state.field[to] != 0) {
         return 0;
     }
-    // check that figure doesnt fall down
-    if (from % 10 == 9 && to % 10 == 0) {
+
+    // check that figure doesnt collide with right wall
+    if (to < 0) {
         return 0;
     }
 
-    // check that figure doesnt collide with right wall
-    if (from / 10 == 0 && to / 10 == 6) {
+    // check that figure doesnt fall down
+    if (from % 10 == 9 && to % 10 == 0) {
         return 0;
     }
 
@@ -122,7 +123,7 @@ void render_field(RGB bitmap[KEY_NUM]) {
 }
 
 void spawn_figure(void) {
-    next_figure.type = rand() % LAST_TYPE;
+    next_figure.type = T + rand() % (LAST_TYPE - T);
     next_figure.position_type = UP_POSITION;
     switch (next_figure.type) {
         case I:
@@ -195,21 +196,23 @@ void do_move(void) {
     if (tetris_state.has_moving_figure == 0) {
         spawn_figure();
         tetris_state.has_moving_figure = 1;
-    } else {
-        switch(tetris_state.next_move) {
-            case MOVE_RIGHT:
-                tetris_move_right();
-                break;
-            case MOVE_LEFT:
-                tetris_move_left();
-                break;
-            case MOVE_ROTATE:
-                tetris_rotate();
-                break;
-            default:
-                break;
-        }
+        return;
     }
+
+    switch(tetris_state.next_move) {
+        case MOVE_RIGHT:
+            tetris_move_right();
+            break;
+        case MOVE_LEFT:
+            tetris_move_left();
+            break;
+        case MOVE_ROTATE:
+            tetris_rotate();
+            break;
+        default:
+            break;
+    }
+
     tetris_state.next_move = MOVE_NONE;
 }
 
