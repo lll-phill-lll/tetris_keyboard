@@ -30,6 +30,11 @@
 #define L_FIGURE_SPAWN_P3 21
 #define L_FIGURE_SPAWN_P4 20
 
+#define J_FIGURE_SPAWN_P1 40
+#define J_FIGURE_SPAWN_P2 41
+#define J_FIGURE_SPAWN_P3 31
+#define J_FIGURE_SPAWN_P4 21
+
 enum figure_type {
     NONE_FIGURE = 0,
     T,
@@ -37,7 +42,7 @@ enum figure_type {
     S,
     O,
     L,
-    // J,
+    J,
     // Z,
 
     LAST_TYPE
