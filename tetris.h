@@ -107,3 +107,5 @@ void tetris_rotate(void);
 void tetris_pause(void);
 
 void tetris_register_move(uint8_t move);
+
+char is_game_over(void);

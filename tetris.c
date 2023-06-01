@@ -219,7 +219,7 @@ void remove_full_lines(void) {
     }
 }
 
-char is_game_over(void) {
+char is_next_move_ends_game(void) {
     // if figure doesn't fit into screen
     // one of it's coodinates will be on the last row
     // and another on the first
@@ -265,7 +265,6 @@ char move_down_if_possible(figure_t* figure) {
 
 void do_move(int8_t next_move) {
     if (tetris_state.is_game_over) {
-        init_tetris_state();
         return;
     }
     if (tetris_state.is_paused) {
@@ -412,7 +411,7 @@ void tetris_move_down() {
     // if we can't move figure down freeze it, check for game over
     // and spawn new figure
     if (!move_down_if_possible(&next_figure)) {
-        if (is_game_over()) {
+        if (is_next_move_ends_game()) {
             process_game_over();
             return;
         }
@@ -423,4 +422,8 @@ void tetris_move_down() {
 
 void tetris_register_move(uint8_t move) {
     tetris_state.next_move = move;
+}
+
+char is_game_over(void) {
+    return tetris_state.is_game_over;
 }

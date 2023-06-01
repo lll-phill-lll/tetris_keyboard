@@ -59,6 +59,30 @@ void apply_bitmap(uint8_t led_min, uint8_t led_max) {
     }
 }
 
+const uint8_t game_over_animation_total_steps = 10;
+uint8_t game_over_current_animation_step = 0;
+
+
+void add_game_over_animation(void) {
+    for (int8_t row = 0; row <= game_over_current_animation_step - 1; ++row) {
+        for (int8_t i = 0; i <= 6; ++i) {
+            bitmap[row + i * 10].r = 0xFF;
+            bitmap[row + i * 10].g = 0;
+            bitmap[row + i * 10].b = 0;
+        }
+    }
+
+    ++game_over_current_animation_step;
+}
+
+void process_game_over_animation(void) {
+      add_game_over_animation();
+      if (game_over_animation_total_steps == game_over_current_animation_step) {
+          game_over_current_animation_step = 0;
+          init_tetris_state();
+      }
+}
+
 
 // e.g: A simple effect, self-contained within a single method
 static bool tetris(effect_params_t* params) {
@@ -76,6 +100,9 @@ static bool tetris(effect_params_t* params) {
       clear_bitmap();
       uint32_t delta_time = timer_elapsed32(last_updated);
       get_next_move(delta_time, bitmap);
+      if (is_game_over()) {
+          process_game_over_animation();
+      }
       last_updated = timer_read32();
       timer = g_rgb_timer + 1000 / FPS;
   }
