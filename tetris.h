@@ -31,7 +31,7 @@
 #define DOWN_CELL_2_COL 58
 
 enum figure_type {
-    T = 1,
+    T = 0,
     I,
     RZ,
     // O,
@@ -88,7 +88,7 @@ typedef struct _tetris_state_t {
     char is_paused;
     uint8_t next_move;
 
-    int8_t field[PLAY_FIELD_SIZE];
+    int8_t field[72];
 
 
 } tetris_state_t;

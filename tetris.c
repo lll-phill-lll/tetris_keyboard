@@ -16,7 +16,7 @@ void init_tetris_state() {
     tetris_state.is_paused = 0;
     tetris_state.next_move = MOVE_NONE;
 
-    for (uint8_t i = 0; i != PLAY_FIELD_SIZE; ++i) {
+    for (uint8_t i = 0; i != 72; ++i) {
         tetris_state.field[i] = 0;
     }
     // set corner unexisting keys to taken
@@ -217,16 +217,17 @@ void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]) {
     if (tetris_state.anim_counter > delta_time) {
         tetris_state.anim_counter -= delta_time;
     } else {
-        if (tetris_state.move_down_counter > delta_time) {
-            tetris_state.move_down_counter -= delta_time;
-            uint32_t remaining = delta_time - tetris_state.anim_counter;
-            tetris_state.anim_counter = tetris_state.ms_per_move + remaining;
-            do_move();
-        } else {
-            uint32_t move_down_remaining = delta_time - tetris_state.move_down_counter;
-            tetris_state.move_down_counter = tetris_state.ms_per_move_down + move_down_remaining;
-            tetris_move_down();
-        }
+        uint32_t remaining = delta_time - tetris_state.anim_counter;
+        tetris_state.anim_counter = tetris_state.ms_per_move + remaining;
+        do_move();
+    }
+
+    if (tetris_state.move_down_counter > delta_time) {
+        tetris_state.move_down_counter -= delta_time;
+    } else {
+        uint32_t move_down_remaining = delta_time - tetris_state.move_down_counter;
+        tetris_state.move_down_counter = tetris_state.ms_per_move_down + move_down_remaining;
+        tetris_move_down();
     }
 
     render_field(bitmap);
