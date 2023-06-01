@@ -14,6 +14,7 @@ void init_tetris_state() {
     tetris_state.ms_per_move_down = 800;
     tetris_state.is_paused = 0;
     tetris_state.next_move = MOVE_NONE;
+    tetris_state.is_game_over = 0;
 
     for (uint8_t i = 0; i != PLAY_FIELD_SIZE; ++i) {
         tetris_state.field[i] = 0;
@@ -133,7 +134,7 @@ void render_field(RGB bitmap[KEY_NUM]) {
 }
 
 void process_game_over(void) {
-    init_tetris_state();
+    tetris_state.is_game_over = 1;
 }
 
 
@@ -262,7 +263,11 @@ char move_down_if_possible(figure_t* figure) {
     return do_move_if_possible(figure, figure->p1+1, figure->p2+1, figure->p3+1, figure->p4+1);
 }
 
-void do_move(void) {
+void do_move(int8_t next_move) {
+    if (tetris_state.is_game_over) {
+        init_tetris_state();
+        return;
+    }
     if (tetris_state.is_paused) {
         return;
     }
@@ -272,7 +277,7 @@ void do_move(void) {
         return;
     }
 
-    switch(tetris_state.next_move) {
+    switch(next_move) {
         case MOVE_RIGHT:
             tetris_move_right();
             break;
@@ -281,6 +286,9 @@ void do_move(void) {
             break;
         case MOVE_ROTATE:
             tetris_rotate();
+            break;
+        case MOVE_DOWN:
+            tetris_move_down();
             break;
         default:
             break;
@@ -295,7 +303,7 @@ void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]) {
     } else {
         uint32_t remaining = delta_time - tetris_state.anim_counter;
         tetris_state.anim_counter = tetris_state.ms_per_move + remaining;
-        do_move();
+        do_move(tetris_state.next_move);
     }
 
     if (tetris_state.move_down_counter > delta_time) {
@@ -303,7 +311,7 @@ void get_next_move(uint32_t delta_time, RGB bitmap[KEY_NUM]) {
     } else {
         uint32_t move_down_remaining = delta_time - tetris_state.move_down_counter;
         tetris_state.move_down_counter = tetris_state.ms_per_move_down + move_down_remaining;
-        tetris_move_down();
+        do_move(MOVE_DOWN);
     }
 
     render_field(bitmap);
@@ -401,9 +409,6 @@ void tetris_pause() {
 }
 
 void tetris_move_down() {
-    if (tetris_state.is_paused) {
-        return;
-    }
     // if we can't move figure down freeze it, check for game over
     // and spawn new figure
     if (!move_down_if_possible(&next_figure)) {

@@ -89,6 +89,8 @@ typedef struct _tetris_state_t {
 
     int8_t field[PLAY_FIELD_SIZE];
 
+    char is_game_over;
+
 
 } tetris_state_t;
 
