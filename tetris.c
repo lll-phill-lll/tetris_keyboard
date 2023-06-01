@@ -206,19 +206,15 @@ void render_figure(RGB bitmap[KEY_NUM], figure_t* figure) {
     }
 }
 
-void add_predicted_next_figure_colors_to_field(void) {
-    int8_t predicted_next_figure = predict_next_figure_type();
-    tetris_state.field[50] = predicted_next_figure;
-    tetris_state.field[60] = predicted_next_figure;
-    tetris_state.field[61] = predicted_next_figure;
-    tetris_state.field[59] = predicted_next_figure;
-
-}
-
 void render_field(RGB bitmap[KEY_NUM]) {
-    add_predicted_next_figure_colors_to_field();
+    int8_t predicted_next_figure = predict_next_figure_type();
     for (int8_t i = 0; i < PLAY_FIELD_SIZE; ++i) {
-        switch (tetris_state.field[i]) {
+        int8_t cell_type = tetris_state.field[i];
+        // add next figure indicator to the keyboard
+        if (i == 50 || i == 60 || i == 61 || i == 59) {
+            cell_type = predicted_next_figure;
+        }
+        switch (cell_type) {
             case I:
                 render_I_cell(bitmap, i);
                 break;
@@ -350,7 +346,7 @@ void remove_row(int8_t remove_row) {
             }
 
             // if it's not the first row and if cell is not located under missing key
-            if (field_index % 10 && tetris_state.field[field_index - 1] >= 0) {
+            if (field_index % 10 && tetris_state.field[field_index - 1] > 0) {
                 tetris_state.field[field_index] = tetris_state.field[field_index - 1];
             } else {
                 tetris_state.field[field_index] = 0;
