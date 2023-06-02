@@ -2,7 +2,7 @@
 
 # Description
 
-![General screenshot](/img/general.png)
+<img src="img/general.png" alt="General image" width="300">
 
 This is a fun project I developed while testing [QMK library](https://github.com/qmk/qmk_firmware) with ZSA moonlander.
 
@@ -50,6 +50,8 @@ keys are taken into account. So, you need to fill only 5 cells of the last row i
 
 Here you can see my tables.
 
+<img src="img/tables.png" alt="Tables" width="300">
+
 ## Colors
 
 Top left table is initial colors to keys mapping. Next tables are my
@@ -59,9 +61,8 @@ and we need to take it into account while calculating the collisions.
 ## Rotations
 
 I used the simpliest possible rotation system. All the pieces are rotated around 3 cell.
-Kicks are not used. The only thing I check here is collisions with walls and other pieces.
+Kicks are not implemented. The only thing I check here is collisions with walls and other pieces.
 
-![Tables](/img/tables.png)
 
 ## Code quality
 
@@ -71,15 +72,15 @@ Sorry :(
 
 ### Game over
 
-![Game over](/img/gameover.gif)
+<img src="img/gameover.GIF" alt="Game over" width="300">
 
 ### Rotate
 
-![Rotate](/img/rotate.png)
+<img src="img/rotate.GIF" alt="Rotate" width="300">
 
 ### Full gameplay
 
-![Full gameplay](/img/full_gameplay.png)
+<img src="img/full_gameplay.GIF" alt="Full gameplay" width="300">
 
 # Acknowledgement
 
