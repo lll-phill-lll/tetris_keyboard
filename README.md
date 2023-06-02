@@ -2,7 +2,9 @@
 
 # Description
 
-<img src="img/general.png" alt="General image" width="300">
+<p align="center">
+  <img src="img/general.png" alt="General image" width="500"> 
+</p>
 
 This is a fun project I developed while testing [QMK library](https://github.com/qmk/qmk_firmware) with ZSA moonlander.
 
@@ -11,6 +13,12 @@ I was trying to implement custom layout and stumbled upon the article describing
 Thumb clusters are used next figure indication and falling figures control.
 Field size is 10x7 excepting 6 missing keys (pixels). While clearing the rows these missing
 keys are taken into account. So, you need to fill only 5 cells of the last row in order to clear the line.
+
+### Full gameplay
+
+<p align="center">
+  <img src="img/full_gameplay.GIF" alt="Full gameplay" width="300">
+</p>
 
 # Implemented features
 
@@ -50,8 +58,10 @@ keys are taken into account. So, you need to fill only 5 cells of the last row i
 
 Here you can see my tables.
 
+<p align="center">
 <img src="img/tables.png" alt="Tables" width="300">
-
+</p>
+  
 ## Colors
 
 Top left table is initial colors to keys mapping. Next tables are my
@@ -72,15 +82,15 @@ Sorry :(
 
 ### Game over
 
-<img src="img/gameover.GIF" alt="Game over" width="300">
+<p align="center">
+    <img src="img/gameover.GIF" alt="Game over" width="300">
+</p>
 
 ### Rotate
 
+<p align="center">
 <img src="img/rotate.GIF" alt="Rotate" width="300">
-
-### Full gameplay
-
-<img src="img/full_gameplay.GIF" alt="Full gameplay" width="300">
+</p>
 
 # Acknowledgement
 
