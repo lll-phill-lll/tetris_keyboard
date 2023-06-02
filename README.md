@@ -16,6 +16,8 @@ keys are taken into account. So, you need to fill only 5 cells of the last row i
 
 ### Full gameplay
 
+[youtube video link (with audio)](https://youtube.com/shorts/7EGZhT_ZkI4)
+
 <p align="center">
   <img src="img/full_gameplay.GIF" alt="Full gameplay" width="300">
 </p>
