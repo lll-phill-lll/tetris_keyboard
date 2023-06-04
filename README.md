@@ -14,9 +14,15 @@ Thumb clusters are used next figure indication and falling figures control.
 Field size is 10x7 excepting 6 missing keys (pixels). While clearing the rows these missing
 keys are taken into account. So, you need to fill only 5 cells of the last row in order to clear the line.
 
-### Full gameplay
+### Gameplay
 
-[youtube video link (with audio)](https://youtube.com/shorts/7EGZhT_ZkI4)
+#### Video
+
+[Shorts with Tetris sounds](https://youtube.com/shorts/7EGZhT_ZkI4)
+
+[Fancy without Tetris sounds](https://www.youtube.com/watch?v=2zPjUwv7bLs)
+
+#### Gif
 
 <p align="center">
   <img src="img/full_gameplay.GIF" alt="Full gameplay" width="300">
