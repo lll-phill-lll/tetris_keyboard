@@ -103,4 +103,6 @@ Sorry :(
 # Acknowledgement
 
 I found this [repo](https://github.com/rgoulter/qmk_firmware/tree/rgbmatrix-snake/layouts/community/planck_mit/rgbmatrix-snake) somewhere on reddit:  and it was superuseful and helped me a lot
-to understand QMK library. Shutout to rgoulter.
+to understand QMK library. Shutout to [@rgoulter](https://github.com/rgoulter).
+
+And additional thank to [@optozorax](https://github.com/optozorax) for the motivation to this project.
