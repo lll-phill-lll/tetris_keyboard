@@ -3,7 +3,7 @@
 # Description
 
 <p align="center">
-  <img src="img/general.png" alt="General image" width="500"> 
+  <img src="img/general.jpg" alt="General image" width="500">
 </p>
 
 This is a fun project I developed while testing [QMK library](https://github.com/qmk/qmk_firmware) with ZSA moonlander.
@@ -69,7 +69,7 @@ Here you can see my tables.
 <p align="center">
 <img src="img/tables.png" alt="Tables" width="300">
 </p>
-  
+
 ## Colors
 
 Top left table is initial colors to keys mapping. Next tables are my
